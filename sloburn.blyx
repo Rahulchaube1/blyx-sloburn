@@ -1,0 +1,30 @@
+fn sloburn_finite(values: vector) -> bool {
+    let mut i = 0;
+    while i < len(values) {
+        let value = at(values, i);
+        if !(value - value == 0.0) {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+fn sloburn_compute(bad: f64, total: f64, allowed: f64) -> vector {
+    if bad > total || allowed > 1.0 {
+        return [];
+    }
+    let rate = bad / total;
+    [rate, rate / allowed]
+}
+
+// Normalize observed failures by an allowed error fraction.
+// Returns [observed error fraction, burn multiple]. The allowed error fraction is greater than zero and at most one.
+pub fn sloburn_rate(bad: f64, total: f64, allowed: f64) -> vector {
+    if !(bad >= 0.0 && bad <= 9007199254740991.0 && bad % 1.0 == 0.0) { return []; }
+    if !(total >= 1.0 && total <= 9007199254740991.0 && total % 1.0 == 0.0) { return []; }
+    if !(allowed > 0.0 && allowed - allowed == 0.0) { return []; }
+    let result = sloburn_compute(bad, total, allowed);
+    if !sloburn_finite(result) { return []; }
+    result
+}
